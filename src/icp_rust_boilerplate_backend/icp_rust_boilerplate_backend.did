@@ -1,3 +1,25 @@
+type Error = variant {
+  InvalidInput : record { msg : text };
+  NotFound : record { msg : text };
+  Unauthorized : record { msg : text };
+  AlreadyExists : record { msg : text };
+};
+type Result = variant { Ok : Vote; Err : Error };
+type Result_1 = variant { Ok : bool; Err : Error };
+type Vote = record {
+  id : nat64;
+  voter_id : text;
+  timestamp : nat64;
+  proof : text;
+  candidate : text;
+};
+type VotePayload = record { proof : text; candidate : text };
 service : {
-    "greet": (text) -> (text) query;
+  add_vote : (VotePayload, text) -> (Result);
+  check_zkp_validity : (nat64, text) -> (Result_1) query;
+  get_all_votes : () -> (vec Vote) query;
+  get_vote : (nat64) -> (Result) query;
+  get_vote_count : (text) -> (nat64) query;
+  get_voters_vote : (text) -> (Result) query;
+  modify_vote : (nat64, VotePayload) -> (Result);
 }
